@@ -99,7 +99,7 @@ namespace Narazaka.Unity.MergedAnimationClip.Editor
             return MergeClip(guid);
         }
 
-        static AnimationClipMergeSetting GetMergedAnimationClip(string path)
+        internal static AnimationClipMergeSetting GetMergedAnimationClip(string path)
         {
             var subAssets = AssetDatabase.LoadAllAssetRepresentationsAtPath(path);
             if (subAssets == null || subAssets.Length == 0) return null;

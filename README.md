@@ -20,9 +20,17 @@ https://github.com/Narazaka/MergedAnimationClip/releases/latest から `net.nara
 
 ## Usage
 
-プロジェクトの右クリックから`Create -> Animation (Merged)`でアニメーションファイルを作り、ファイル内にあるMerge Settingを編集して保存する。
+### 新しくマージAnimationClipを作る
 
-以後自動的にマージされる。
+プロジェクトの右クリックから`Create -> Animation (Merged)`でアニメーションファイルを作り、ファイル内にあるMerge Settingを編集して保存してください。
+
+以後自動的にマージされます。
+
+### 既存のAnimationClipをマージAnimationClipに変換する
+
+**注意: 既存のアニメーション内容はクリアされます。**
+
+AnimationClipを選択し右クリックして`Convert Animation to (Merged)`を選びます。
 
 ## License
 
