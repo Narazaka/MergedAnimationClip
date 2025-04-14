@@ -2,7 +2,7 @@
   "name": "net.narazaka.unity.merged-animation-clip",
   "version": "1.0.0",
   "displayName": "Merged Animation Clip",
-  "description": "Merged Animation Clip",
+  "description": "Animation Clip with merge setting",
   "author": {
     "name": "Narazaka",
     "url": "https://github.com/Narazaka"
@@ -10,9 +10,5 @@
   "license": "Zlib",
   "type": "tool",
   "url" : "https://github.com/Narazaka/MergedAnimationClip.git",
-  "unity": "2022.3",
-  "vpmDependencies": {
-    "com.vrchat.avatars": ">=3.7.5",
-    "com.vrchat.worlds": ">=3.7.5"
-  }
+  "unity": "2019.4"
 }

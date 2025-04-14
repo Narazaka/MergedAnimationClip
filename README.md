@@ -1,8 +1,12 @@
 # Merged Animation Clip
 
-desc
+Animation Clip with merge setting
 
 ## Install
+
+### OpenUPM
+
+See [OpenUPM page](https://openupm.com/packages/net.narazaka.unity.merged-animation-clip/)
 
 ### VCC用インストーラーunitypackageによる方法（おすすめ）
 
@@ -16,7 +20,9 @@ https://github.com/Narazaka/MergedAnimationClip/releases/latest から `net.nara
 
 ## Usage
 
-TODO
+プロジェクトの右クリックから`Create -> Animation (Merged)`でアニメーションファイルを作り、ファイル内にあるMerge Settingを編集して保存する。
+
+以後自動的にマージされる。
 
 ## License
 
