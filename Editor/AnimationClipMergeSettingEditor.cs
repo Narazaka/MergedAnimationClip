@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace Narazaka.Unity.MergedAnimationClip.Editor
 {
+    [CustomEditor(typeof(AnimationClipMergeSetting))]
     public class AnimationClipMergeSettingEditor : UnityEditor.Editor
     {
         [MenuItem("Assets/Create/Animation (Merged)", priority = 402)]
@@ -24,7 +25,7 @@ namespace Narazaka.Unity.MergedAnimationClip.Editor
             Selection.activeObject = clip;
         }
 
-        [MenuItem("Assets/Convert Animation to (Merged)")]
+        [MenuItem("Assets/[Convert] Animation to (Merged)", validate = false)]
         public static void ConvertAnimationToMerged()
         {
             var clips = Selection.GetFiltered<AnimationClip>(SelectionMode.Assets);
@@ -49,6 +50,37 @@ namespace Narazaka.Unity.MergedAnimationClip.Editor
             }
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+        }
+
+        [MenuItem("Assets/[Convert] Animation to (Merged)", validate = true)]
+        public static bool ValidateConvertAnimationToMerged()
+        {
+            var clips = Selection.GetFiltered<AnimationClip>(SelectionMode.Assets);
+            if (clips.Length == 0)
+            {
+                return false;
+            }
+            var paths = clips.Select(clip => AssetDatabase.GetAssetPath(clip)).Where(path => AnimationClipMergeProcessor.GetMergedAnimationClip(path) == null).ToArray();
+            if (paths.Length == 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        bool foldout;
+
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
+
+            foldout = EditorGUILayout.Foldout(foldout, "Advanced");
+            if (foldout && GUILayout.Button("Delete setting (convert to normal AnimationClip)") && EditorUtility.DisplayDialog("Delete setting", "Are you sure you want to continue?", "OK", "Cancel"))
+            {
+                Undo.DestroyObjectImmediate(target);
+                AssetDatabase.Refresh();
+                AssetDatabase.SaveAssets();
+            }
         }
     }
 }
