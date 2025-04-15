@@ -51,7 +51,8 @@ namespace Narazaka.Unity.MergedAnimationClip.Editor
 
         static bool ProcessClip(string clipPath, AnimationClip clip)
         {
-            if (animationDependencies == null || animationDependencies.Count == 0) return false;
+            EnsureDependencies();
+            if (animationDependencies.Count == 0) return false;
             var guid = AssetDatabase.GUIDFromAssetPath(clipPath);
             var changed = false;
             if (animationDependencies.TryGetValue(guid, out var dependencies))
@@ -69,22 +70,42 @@ namespace Narazaka.Unity.MergedAnimationClip.Editor
 
         static bool ProcessMergedClip(string clipPath, AnimationClip clip, AnimationClipMergeSetting merged)
         {
+            EnsureDependencies();
             var guid = AssetDatabase.GUIDFromAssetPath(clipPath);
-            if (animationDependencies == null)
-            {
-                animationDependencies = new Dictionary<GUID, HashSet<GUID>>();
-            }
             var dependencyClips = merged.clips;
             if (dependencyClips == null)
             {
                 dependencyClips = new AnimationClip[0];
             }
-            // clean previous dependencies
-            foreach (var source in animationDependencies.Keys)
+            CleanDependencies(guid);
+            AddDependencies(guid, dependencyClips);
+            return MergeClip(guid);
+        }
+
+        static void EnsureDependencies()
+        {
+            if (animationDependencies == null)
             {
-                animationDependencies[source].Remove(guid);
+                MakeDependencies();
             }
-            // add new dependencies
+        }
+
+        static void MakeDependencies()
+        {
+            animationDependencies = new Dictionary<GUID, HashSet<GUID>>();
+            var guids = AssetDatabase.FindAssets("t:AnimationClipMergeSetting");
+            foreach (var guid in guids)
+            {
+                var mergedAnimationClip = GetMergedAnimationClip(AssetDatabase.GUIDToAssetPath(guid));
+                if (mergedAnimationClip != null)
+                {
+                    AddDependencies(new GUID(guid), mergedAnimationClip.clips);
+                }
+            }
+        }
+
+        static void AddDependencies(GUID settingClipPathGuid, AnimationClip[] dependencyClips)
+        {
             foreach (var dependency in dependencyClips)
             {
                 var dependencyPath = AssetDatabase.GetAssetPath(dependency);
@@ -93,10 +114,16 @@ namespace Narazaka.Unity.MergedAnimationClip.Editor
                 {
                     animationDependencies[dependencyGuid] = new HashSet<GUID>();
                 }
-                animationDependencies[dependencyGuid].Add(guid);
+                animationDependencies[dependencyGuid].Add(settingClipPathGuid);
             }
-            // merge clips
-            return MergeClip(guid);
+        }
+
+        static void CleanDependencies(GUID settingClipPathGuid)
+        {
+            foreach (var source in animationDependencies.Keys)
+            {
+                animationDependencies[source].Remove(settingClipPathGuid);
+            }
         }
 
         internal static AnimationClipMergeSetting GetMergedAnimationClip(string path)
